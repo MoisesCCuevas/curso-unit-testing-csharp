@@ -3,7 +3,7 @@ using StringManipulation;
 using Moq;
 using Microsoft.Extensions.Logging;
 
-namespace curso_de_csharp;
+namespace StringManipulation.Test;
 
 // all test classes should be public and end with Test
 
@@ -20,7 +20,8 @@ namespace curso_de_csharp;
 // Timely: the test should be written at the same time as the code it tests
 
 public class StringOperationsTest {
-    [Fact(Skip = "Justification for skipping the test")]
+    //[Fact(Skip = "Justification for skipping the test")]
+    [Fact]
     public void ConcatenateStrings() {
         StringOperations stringOperations = new();
         var result = stringOperations.ConcatenateStrings("Hello", "World");
@@ -73,7 +74,6 @@ public class StringOperationsTest {
     public void GetStringLength() {
         StringOperations stringOperations = new();
         var result = stringOperations.GetStringLength("Hello World");
-        Assert.NotNull(result);
         Assert.Equal(11, result);
     }
 
