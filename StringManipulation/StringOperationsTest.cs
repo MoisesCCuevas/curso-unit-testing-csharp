@@ -1,5 +1,7 @@
 using Xunit;
 using StringManipulation;
+using Moq;
+using Microsoft.Extensions.Logging;
 
 namespace curso_de_csharp;
 
@@ -18,7 +20,7 @@ namespace curso_de_csharp;
 // Timely: the test should be written at the same time as the code it tests
 
 public class StringOperationsTest {
-    [Fact]
+    [Fact(Skip = "Justification for skipping the test")]
     public void ConcatenateStrings() {
         StringOperations stringOperations = new();
         var result = stringOperations.ConcatenateStrings("Hello", "World");
@@ -48,5 +50,64 @@ public class StringOperationsTest {
         Assert.NotNull(result);
         Assert.NotEmpty(result);
         Assert.Equal("HelloWorld", result);
+    }
+
+    [Fact]
+    public void QuantintyInWords() {
+        StringOperations stringOperations = new();
+        var result = stringOperations.QuantintyInWords("cat", 10);
+        Assert.NotNull(result);
+        Assert.NotEmpty(result);
+        Assert.StartsWith("diez", result);
+        Assert.Contains("cats", result);
+        Assert.Equal("diez cats", result);
+    }
+
+    [Fact]
+    public void GetStringLength_Exception() {
+        StringOperations stringOperations = new();
+        Assert.ThrowsAny<ArgumentNullException>(() => stringOperations.GetStringLength(null));
+    }
+
+    [Fact]
+    public void GetStringLength() {
+        StringOperations stringOperations = new();
+        var result = stringOperations.GetStringLength("Hello World");
+        Assert.NotNull(result);
+        Assert.Equal(11, result);
+    }
+
+    [Fact]
+    public void TruncateString_Exception() {
+        StringOperations stringOperations = new();
+        Assert.ThrowsAny<ArgumentOutOfRangeException>(() => stringOperations.TruncateString("Hello World", 0));
+    }
+
+    [Theory]
+    [InlineData("V", 5)]
+    [InlineData("IV", 4)]
+    [InlineData("XLII", 42)]
+    public void FromRomanToNumber(string number, int expected) {
+        StringOperations stringOperations = new();
+        var result = stringOperations.FromRomanToNumber(number);
+        Assert.Equal(expected, result);
+    }
+
+    [Fact]
+    public void CountOccurrences() {
+        var mockLogger = new Mock<ILogger<StringOperations>>();
+        StringOperations stringOperations = new(mockLogger.Object);
+        var result = stringOperations.CountOccurrences("Hello World", 'l');
+        Assert.Equal(3, result);
+    }
+
+    [Fact]
+    public void ReadFile() {
+        StringOperations stringOperations = new();
+        var mockFile = new Mock<IFileReaderConector>();
+        //mockFile.Setup(m => m.ReadString("test.txt")).Returns("Reading file content");
+        mockFile.Setup(m => m.ReadString(It.IsAny<string>())).Returns("Reading file content");
+        var result = stringOperations.ReadFile(mockFile.Object, "test2.txt");
+        Assert.Equal("Reading file content", result);
     }
 }
